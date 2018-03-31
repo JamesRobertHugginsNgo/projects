@@ -94,15 +94,15 @@ gulp.task('default', ['cleanup', 'cleanBuildJS', 'cleanBuildCSS', 'cleanBuildSCS
 
 gulp.task('serve', ['default'], () => {
 	gulp.src('.')
-	.pipe(webServer({
-		directoryListing: {
-			enable: true,
-			path: '.'
-		},
-		livereload: true,
-		open: true,
-		port: 8080
-	}));
+		.pipe(webServer({
+			directoryListing: {
+				enable: true,
+				path: '.'
+			},
+			livereload: true,
+			open: true,
+			port: 8080
+		}));
 
 	gulp.watch(jsGlob, () => buildJS());
 	gulp.watch(cssGlob, () => buildCSS());
@@ -112,23 +112,17 @@ gulp.task('serve', ['default'], () => {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-gulp.task('goodmorning_gitpull', () => {
-	return gulp.src('.')
-		.pipe(through.obj((chunk, enc, cb) => {
-			git.revParse({
-				args: '--abbrev-ref HEAD'
-			}, (err, branch) => {
-				git.pull('origin', branch, () => {
-					cb(null, chunk);
-				});
+gulp.task('goodmorning_gitpull', () => gulp.src('.')
+	.pipe(through.obj((chunk, enc, cb) => {
+		git.revParse({ args: '--abbrev-ref HEAD' }, (err, branch) => {
+			git.pull('origin', branch, () => {
+				cb(null, chunk);
 			});
-		}));
-});
+		});
+	})));
 
-gulp.task('goodmorning_install', ['goodmorning_gitpull'], () => {
-	return gulp.src(['./package.json'])
-		.pipe(install());
-});
+gulp.task('goodmorning_install', ['goodmorning_gitpull'], () => gulp.src(['./package.json'])
+	.pipe(install()));
 
 gulp.task('goodmorning', ['goodmorning_gitpull', 'goodmorning_install'], () => {
 	console.log('  ________                  .___    _____                      .__              ._.');
@@ -141,18 +135,16 @@ gulp.task('goodmorning', ['goodmorning_gitpull', 'goodmorning_install'], () => {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-gulp.task('goodnight_gitpush', () => {
-	return gulp.src('.')
-		.pipe(through.obj((chunk, enc, cb) => {
-			git.revParse({
-				args: '--abbrev-ref HEAD'
-			}, (err, branch) => {
-				git.push('origin', branch, () => {
-					cb(null, chunk);
-				});
+gulp.task('goodnight_gitpush', () => gulp.src('.')
+	.pipe(through.obj((chunk, enc, cb) => {
+		git.revParse({
+			args: '--abbrev-ref HEAD'
+		}, (err, branch) => {
+			git.push('origin', branch, () => {
+				cb(null, chunk);
 			});
-		}));
-});
+		});
+	})));
 
 gulp.task('goodnight', ['goodnight_gitpush'], () => {
 	console.log('  ________                  .___  _______  .__       .__     __  ._.');
